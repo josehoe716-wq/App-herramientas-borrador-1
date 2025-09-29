@@ -225,5 +225,9 @@ export const getUsers = (): User[] => {
   return usersStr ? JSON.parse(usersStr) : [];
 };
 
+export const saveUsers = (users: User[]) => {
+  localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
+};
+
 // Initialize data on first load
 initializeDefaultData();
