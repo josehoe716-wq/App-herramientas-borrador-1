@@ -23,12 +23,30 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
     if (error) {
       setError('Credenciales inválidas. Por favor, verifique su usuario y contraseña.');
     } else {
-      onSuccess();
+      // Small delay to ensure localStorage is updated
+      setTimeout(() => {
+        onSuccess();
+      }, 100);
     }
     
     setLoading(false);
   };
 
+  const handleQuickAccess = async () => {
+    setLoading(true);
+    setError('');
+    
+    const { error } = await signIn('tecnico', 'tecnico123');
+    if (!error) {
+      // Small delay to ensure localStorage is updated
+      setTimeout(() => {
+        onSuccess();
+      }, 100);
+    } else {
+      setError('Error al acceder como técnico');
+    }
+    setLoading(false);
+  };
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex items-center justify-center p-4">
       <div className="max-w-md w-full">
@@ -117,16 +135,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
           {/* Quick Access for Technician */}
           <div className="mt-6 pt-6 border-t border-gray-200">
             <button
-              onClick={async () => {
-                setLoading(true);
-                const { error } = await signIn('tecnico', 'tecnico123');
-                if (!error) {
-                  onSuccess();
-                } else {
-                  setError('Error al acceder como técnico');
-                }
-                setLoading(false);
-              }}
+              onClick={handleQuickAccess}
               disabled={loading}
               className="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
             >

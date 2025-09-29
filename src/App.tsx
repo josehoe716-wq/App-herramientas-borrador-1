@@ -14,20 +14,10 @@ import { useMovements } from './hooks/useMovements';
 import { DashboardStats, Tool } from './types';
 
 function App() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, refetch: refetchAuth } = useAuth();
   const { tools, toolsInUse, loading: toolsLoading, addTool, updateTool, deleteTool } = useTools();
   const { movements, loading: movementsLoading, createCheckout, createCheckin } = useMovements();
   const [activeTab, setActiveTab] = useState('dashboard');
-
-  // Refresh data when user changes or movements are updated
-  useEffect(() => {
-    if (user) {
-      // Refresh all data when user logs in
-      setTimeout(() => {
-        window.location.reload();
-      }, 100);
-    }
-  }, [user?.id]);
 
   // Calculate dashboard stats
   const stats: DashboardStats = useMemo(() => {
@@ -59,6 +49,13 @@ function App() {
     return { error: null };
   };
 
+  const handleLoginSuccess = () => {
+    refetchAuth();
+  };
+
+  const handleSignOut = () => {
+    refetchAuth();
+  };
   if (authLoading) {
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center">
@@ -68,14 +65,14 @@ function App() {
   }
 
   if (!user) {
-    return <LoginForm onSuccess={() => {}} />;
+    return <LoginForm onSuccess={handleLoginSuccess} />;
   }
 
   const loading = toolsLoading || movementsLoading;
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header user={user} onSignOut={() => {}} />
+      <Header user={user} onSignOut={handleSignOut} />
       
       <div className="flex">
         <div className="w-64 min-h-screen">

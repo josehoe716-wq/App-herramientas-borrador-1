@@ -76,18 +76,18 @@ export const useTools = () => {
 
     loadData();
 
-    // Listen for storage changes to update in real-time
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'ecuajugos_tools' || e.key === 'ecuajugos_movements') {
-        fetchTools();
-        fetchToolsInUse();
-      }
+    // Listen for custom events to update in real-time
+    const handleDataUpdate = () => {
+      fetchTools();
+      fetchToolsInUse();
     };
 
-    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('toolsUpdated', handleDataUpdate);
+    window.addEventListener('movementsUpdated', handleDataUpdate);
     
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('toolsUpdated', handleDataUpdate);
+      window.removeEventListener('movementsUpdated', handleDataUpdate);
     };
   }, []);
 

@@ -51,11 +51,9 @@ export const useMovements = () => {
         tool.available_stock -= quantity;
         saveTools(tools);
         
-        // Trigger storage event for real-time updates
-        window.dispatchEvent(new StorageEvent('storage', {
-          key: 'ecuajugos_movements',
-          newValue: JSON.stringify(getMovements())
-        }));
+        // Trigger custom events for real-time updates
+        window.dispatchEvent(new CustomEvent('toolsUpdated'));
+        window.dispatchEvent(new CustomEvent('movementsUpdated'));
       }
 
       await fetchMovements();
@@ -99,11 +97,9 @@ export const useMovements = () => {
         tool.available_stock += returnQuantity;
         saveTools(tools);
         
-        // Trigger storage event for real-time updates
-        window.dispatchEvent(new StorageEvent('storage', {
-          key: 'ecuajugos_movements',
-          newValue: JSON.stringify(getMovements())
-        }));
+        // Trigger custom events for real-time updates
+        window.dispatchEvent(new CustomEvent('toolsUpdated'));
+        window.dispatchEvent(new CustomEvent('movementsUpdated'));
       }
 
       await fetchMovements();
