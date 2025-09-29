@@ -31,8 +31,38 @@ export const Dashboard: React.FC<DashboardProps> = ({
     return diffInDays > 2;
   });
 
+  // System alerts for overdue tools
+  const systemAlerts = overdueTools.length > 0;
+
   return (
     <div className="space-y-6">
+      {/* System Alert for Overdue Tools */}
+      {systemAlerts && (
+        <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded-lg">
+          <div className="flex items-center">
+            <AlertTriangle className="h-5 w-5 text-red-400 mr-2" />
+            <h3 className="text-lg font-medium text-red-800">
+              ¡Alerta del Sistema!
+            </h3>
+          </div>
+          <div className="mt-2">
+            <p className="text-sm text-red-700">
+              Hay {overdueTools.length} herramienta{overdueTools.length > 1 ? 's' : ''} que no ha{overdueTools.length > 1 ? 'n' : ''} sido devuelta{overdueTools.length > 1 ? 's' : ''} después de 2 días.
+            </p>
+            <div className="mt-2">
+              {overdueTools.slice(0, 3).map((tool, index) => (
+                <p key={index} className="text-sm text-red-600">
+                  • {tool.tool_name} - {tool.user_name} ({Math.floor((new Date().getTime() - new Date(tool.checkout_date).getTime()) / (1000 * 60 * 60 * 24))} días)
+                </p>
+              ))}
+              {overdueTools.length > 3 && (
+                <p className="text-sm text-red-600">• Y {overdueTools.length - 3} más...</p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">

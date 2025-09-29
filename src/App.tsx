@@ -7,6 +7,7 @@ import { InventoryTable } from './components/Inventory/InventoryTable';
 import { MovementsPanel } from './components/Movements/MovementsPanel';
 import { ReportsPanel } from './components/Reports/ReportsPanel';
 import { ImportExportPanel } from './components/ImportExport/ImportExportPanel';
+import { SettingsPanel } from './components/Settings/SettingsPanel';
 import { useAuth } from './hooks/useAuth';
 import { useTools } from './hooks/useTools';
 import { useMovements } from './hooks/useMovements';
@@ -18,12 +19,15 @@ function App() {
   const { movements, loading: movementsLoading, createCheckout, createCheckin } = useMovements();
   const [activeTab, setActiveTab] = useState('dashboard');
 
-  // Force re-render when user changes
-  const [, forceUpdate] = useState({});
-  
-  const handleAuthSuccess = () => {
-    forceUpdate({});
-  };
+  // Refresh data when user changes or movements are updated
+  useEffect(() => {
+    if (user) {
+      // Refresh all data when user logs in
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
+    }
+  }, [user?.id]);
 
   // Calculate dashboard stats
   const stats: DashboardStats = useMemo(() => {
@@ -64,7 +68,7 @@ function App() {
   }
 
   if (!user) {
-    return <LoginForm onSuccess={handleAuthSuccess} />;
+    return <LoginForm onSuccess={() => {}} />;
   }
 
   const loading = toolsLoading || movementsLoading;
@@ -137,10 +141,7 @@ function App() {
           )}
 
           {activeTab === 'settings' && user.role === 'admin' && (
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Configuración</h2>
-              <p className="text-gray-600">Panel de configuración en desarrollo...</p>
-            </div>
+            <SettingsPanel />
           )}
         </main>
       </div>

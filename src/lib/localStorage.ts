@@ -113,9 +113,12 @@ const initializeDefaultData = () => {
 export const signIn = async (username: string, password: string) => {
   const users = getUsers();
   
-  // Simple authentication - in production you'd want proper password hashing
+  // Check for custom admin password
+  const customAdminPassword = localStorage.getItem('ecuajugos_admin_password');
+  const adminPassword = customAdminPassword || 'admin123';
+  
   const validCredentials = [
-    { username: 'admin', password: 'admin123' },
+    { username: 'admin', password: adminPassword },
     { username: 'tecnico', password: 'tecnico123' },
   ];
 

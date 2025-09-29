@@ -51,14 +51,6 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
           </div>
 
           {/* Demo credentials */}
-          <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <p className="text-sm text-blue-800 mb-2 font-medium">Credenciales de prueba:</p>
-            <div className="text-sm text-blue-700 space-y-1">
-              <p><strong>Admin:</strong> admin / admin123</p>
-              <p><strong>Técnico:</strong> tecnico / tecnico123</p>
-            </div>
-          </div>
-
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
@@ -121,6 +113,33 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
               )}
             </button>
           </form>
+
+          {/* Quick Access for Technician */}
+          <div className="mt-6 pt-6 border-t border-gray-200">
+            <button
+              onClick={async () => {
+                setLoading(true);
+                const { error } = await signIn('tecnico', 'tecnico123');
+                if (!error) {
+                  onSuccess();
+                } else {
+                  setError('Error al acceder como técnico');
+                }
+                setLoading(false);
+              }}
+              disabled={loading}
+              className="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+            >
+              {loading ? (
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+              ) : (
+                <>
+                  <Wrench className="h-5 w-5" />
+                  <span>Acceso Rápido - Técnico</span>
+                </>
+              )}
+            </button>
+          </div>
 
           <div className="mt-8 text-center">
             <p className="text-xs text-gray-500">
